@@ -1,30 +1,17 @@
-# Android 学习笔记
+# Table of contents
 
-## 重要主题
+* [Introduction](README.md)
 
-### Android 框架
+## 第三方库分析
 
-[Androidx](java_api/androidx/README.md)
+* [ARoute库原理](di-san-fang-ku-fen-xi/aroute.md)
 
-## 其他主题
+## 安卓市场
 
-[Jetpack](jetpack/README.md)
+* [安卓市场浏览](an-zhuo-shi-chang/appendix-market.md)
 
-## 附录
+## 面试题
 
-### android gradle相关
+* [基础面试题](mian-shi-ti/basic.md)
+* [安卓市场浏览](mian-shi-ti/an-zhuo-shi-chang-liu-lan.md)
 
-
-### 第三方库分析
-
-* [ARoute库原理](appendix/appendix-lib/aroute/README.md)
-
-### 安卓市场
-
-* [安卓市场浏览](appendix/appendix-market/README.md)
-
-### 面试题
-
-* [基础面试题](appendix/appendix-quiz/basic.md)
-
-* [安卓市场浏览](appendix/appendix-quiz/README.md)
