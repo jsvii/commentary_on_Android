@@ -2,11 +2,9 @@
 
 ## 简介
 
+最近可能入了魔怔，也可能是闲的蛋疼，自己私下学习了 ARouter 的原理以及一些 APT 的知识，为了加深对技术的理解，同时也本着热爱开源的精神为大家提供分享，所以就带着大家强行撸码，分析下 ARouter 路由原理和 Android 中 APT 的使用吧
 
-
-本文一步步手动实现路由框架来理解类似 ARouter 的路由框架原理，撸码的 demo 我会附在文末。
-
-本路由框架就叫 EaseRouter。\(注：demo 里搭建了组件化开发，组件化和路由本身并没有什么联系，但是两个单向依赖的组件之间需要互相启动对方的 Activity，因为没有相互引用，startActivity\(\) 是实现不了的，必须需要一个协定的通信的方式，此时类似 ARouter 和 ActivityRouter 的框架就派上用场了\)。
+本篇文章我会带着大家一步步手动实现路由框架来理解类似 ARouter 的路由框架原理，撸码的 demo 我会附在文末。本路由框架就叫 EaseRouter。\(注：demo 里搭建了组件化开发，组件化和路由本身并没有什么联系，但是两个单向依赖的组件之间需要互相启动对方的 Activity，因为没有相互引用，startActivity\(\) 是实现不了的，必须需要一个协定的通信的方式，此时类似 ARouter 和 ActivityRouter 的框架就派上用场了\)。
 
 ## 涉及知识点
 
@@ -18,9 +16,7 @@
 
 本文的重点是对路由框架的实现进行介绍，所以对于组件化的基本知识在文中不会过多阐述，如有同学对组件化有不理解，可以参考网上众多的博客等介绍，然后再阅读 demo 中的组件化配置进行熟悉，这里附上 github demo 地址：[ARouter 原理剖析及手动实现，点我访问源码，欢迎 star](https://github.com/Xiasm/EasyRouter)。
 
-
-
-
+![](https://user-gold-cdn.xitu.io/2018/7/30/164eaab5f9a7a9be?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 
 如上图，在组件化中，为了业务逻辑的彻底解耦，同时也为了每个 module 都可以方便的单独运行和调试，上层的各个 module 不会进行相互依赖 \(只有在正式联调的时候才会让 app 壳 module 去依赖上层的其他组件 module\)，而是共同依赖于 base module，base module 中会依赖一些公共的第三方库和其他配置。那么在上层的各个 module 中，如何进行通信呢？
 
