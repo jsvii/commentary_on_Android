@@ -1,0 +1,58 @@
+* quiz
+
+** this  vs Activity.this
+
+For example
+#+BEGIN_SRC java
+Intent intent = new Intent(this, SecondActivity.class);
+#+END_SRC
+
+#+BEGIN_SRC bash
+eclipse error:
+The method setClass(Context, Class) in the type Intent is not applicable for the arguments (FirstActivity.ClickEvent, Class)
+#+END_SRC
+
+#+BEGIN_SRC java
+Intent intent = new Intent(FirstActivity.this, SecondActivity.class);
+#+END_SRC
+
+
+But that will be correct. Anybody can explain the difference between those two ? Thanks.
+
+*** 答案
+
+Usually, you can use only this. But, sometimes this makes reference to an inner class... so, for example:
+
+#+BEGIN_SRC java
+Button button = (Button)findViewById(R.id.ticket_details_sell_ticket);
+button.setOnClickListener(new OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        // it will be wrong to use only "this", because it would
+        // reference the just created OnClickListener object
+        Intent login = new Intent(ClassName.this, Login.class);
+        startActivityForResult(login, LOGIN_REQUEST);
+    }
+});
+#+END_SRC
+
+
+** RecycleView的逻辑是什么 LayoutInflater 的实现逻辑是什么
+
+为什么可以充实界面？
+
+
+** 同一个应用程序的 activity 可以在不同的进程么
+
+
+分析：不同的Activity可以运行在不同的进程中
+
+1.在Android系统中，每一个应用程序都是由一些Activity和Service组成。
+
+2.Service运行在独立的进程中，而Activity有可能运行在同一个进程中，也有可能运行在不同的进程中，一般情况下，一个应用程序的所有Activity都运行在同一个进程中。
+
+3.如果想让某个Activity运行在独立的进程中，则需要在Androidmanifest.xml中对Activity的属性Android:process =”value“ 进行配置,value的值就是此Activity所在的进程的进程名。如果进程名以“：”开头，则为私有进程；如果进程名以小写字母开头，则为全局进程。
+
+4.进程之间的通信主要靠binder机制。
+
+5.让某些Activity运行在单独的进程中的好处是可以降低整个应用中不同 组件之间的耦合度”
