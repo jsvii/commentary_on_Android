@@ -1,0 +1,71 @@
+* Chapter 02
+
+
+** 隐式变量 $it 和循环
+
+#+BEGIN_SRC groovy
+task startSession {
+    doLast {
+        chant()
+    }
+}
+
+def chant() {
+    ant.echo 'Repeat after me...'
+}
+
+3.times {
+    task "yayGradle$it" {
+        doLast {
+            println 'Gradle rocks'
+        }
+    }
+}
+
+yayGradle0.dependsOn startSession
+yayGradle2.dependsOn yayGradle1, yayGradle0
+task groupTherapy(dependsOn: yayGradle2)
+#+END_SRC
+
+
+** 可以使用驼峰的缩写
+#+BEGIN_SRC bash
+gradle yG0
+gradle yG1
+#+END_SRC
+
+** 排除
+#+BEGIN_SRC bash
+gradle groupTherapy -x yayGradle0
+#+END_SRC
+
+** 重要参数
+
+命令行参数
+
+-?, h, --help
+
+-b, --build-file
+
+--offline
+
+参数选项
+
+-D, --system-prop  像启动java一样，提供一个系统参数
+
+-P, --project-prop 向构建脚本中传入参数
+
+
+日志选项
+
+-i, --info 改变info级别，输出信息
+
+-s, --stacktrace
+
+-q, --quite
+
+帮助
+
+tasks
+
+properties

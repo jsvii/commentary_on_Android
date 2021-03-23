@@ -1,0 +1,110 @@
+* gradle
+
+** 基本概念
+
+- 每个gradle脚本中都有一个Project实例的，脚本中的所有作用域都是project
+
+** gradle-wrapper
+
+Gradle是个构建系统，能够简化你的编译、打包、测试过程。熟悉Java的同学，可以把Gradle类比成Maven。
+
+Gradle Wrapper的作用是简化Gradle本身的安装、部署。不同版本的项目可能需要不同版本的Gradle，手工部署的话比较麻烦，而且可能产生冲突，所以需要Gradle Wrapper帮你搞定这些事情。Gradle Wrapper是Gradle项目的一部分。
+
+gradle-wrapper.properties
+
+#+BEGIN_SRC bash
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-5.4.1-bin.zip  #
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+#+END_SRC
+
+其中 =distributionUrl= 可以直接写成一个wrapper下的文件 =gradle-5.4.1-bin.zip=
+
+** issue
+gradle一直无效，不知道是为什么，后来发现是因为全局的的gradle.properties设置了代理
+
+我都没要求代理，他竟然设置了，真是夸张！
+
+#+BEGIN_SRC bash
+systemProp.https.proxyPort=8118
+systemProp.http.proxyHost=localhost
+systemProp.https.proxyHost=localhost
+systemProp.http.proxyPort=8118
+#+END_SRC
+
+
+#+BEGIN_SRC groovy
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+mainClassName = 'hello.HelloWorld'
+
+// tag::repositories[]
+repositories {
+    mavenCentral()
+}
+// end::repositories[]
+d
+// tag::jar[]
+jar {
+    baseName = 'gs-gradle'
+    version =  '0.1.0'
+}
+// end::jar[]
+
+// tag::dependencies[]
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile "joda-time:joda-time:2.2"
+    testCompile "junit:junit:4.12"
+}
+// end::dependencies[]
+
+// tag::wrapper[]
+// end::wrapper[]
+#+END_SRC
+
+
+** gradle
+
+Gradle caches artifacts in USER_HOME/.gradle folder. The compiled scripts are usually in the .gradle folder in your project folder.
+
+If you can't find the cache, maybe it's because you have not cached any artifacts yet. You can always see where Gradle has cached artifacts with a simple script:
+
+#+BEGIN_SRC groovy
+apply plugin: 'java'
+
+repositories{
+  mavenCentral()
+}
+
+dependencies{
+  compile 'com.google.guava:guava:12.0'
+}
+
+task showMeCache << {
+  configurations.compile.each { println it }
+}
+#+END_SRC
+
+Now if you run gradle showMeCache it should download the deps into cache and print the full path.
+
+
+-q quite
+
+#+BEGIN_SRC bash
+To run a build, run gradle <task> ...
+
+To see a list of available tasks, run gradle tasks
+
+To see a list of command-line options, run gradle --help
+
+To see more detail about a task, run gradle help --task <task>
+
+For troubleshooting, visit https://help.gradle.org
+#+END_SRC

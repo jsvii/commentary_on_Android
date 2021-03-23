@@ -1,0 +1,267 @@
+* ADB
+
+
+** 常用命令一览
+
+#+BEGIN_SRC bash
+adb devices #查看连接设备
+
+adb -s cf27456f shell # 指定连接设备使用命令
+
+adb install test.apk # 安装应用
+
+adb install -r demo.apk #安装apk 到sd 卡：
+
+adb uninstall cn.com.test.mobile #卸载应用，需要指定包
+
+adb uninstall -k cn.com.test.mobile #卸载app 但保留数据和缓存文件
+
+adb shell pm list packages #列出手机装的所有app 的包名
+
+adb shell pm list packages -3 #列出除了系统应用的第三方应用包名
+
+adb shell pm clear cn.com.test.mobile #清除应用数据与缓存
+
+adb shell am start -ncn.com.test.mobile/.ui.SplashActivity #启动应用
+
+adb shell dumpsys package #包信息Package Information
+
+adb shell dumpsys meminfo #内存使用情况Memory Usage
+
+adb shell am force-stop cn.com.test.mobile #强制停止应用
+
+adb logcat #查看日志
+
+adb logcat -c #清除log 缓存
+
+adb reboot #重启
+
+adb get-serialno #获取序列号
+
+adb shell getprop ro.build.version.release #查看Android 系统版本
+
+adb shell top -m 10 #查看占用内存前10 的app
+
+adb push <local> <remote> #从本地复制文件到设备
+
+adb pull <remote> <local> #从设备复制文件到本地
+
+adb bugreport #查看bug 报告
+
+adb help #查看ADB 帮助
+#+END_SRC
+
+** 主要命令
+
+*** 连接设备
+
+adb [-d|-e|-s <serialNumber>] <command>
+
+连接指定设备的参数：
+
+-d 指定当前唯一通过 USB 连接的 Android 设备为命令目标
+
+-e 指定当前唯一运行的模拟器为命令目标
+
+-s <serialNumber> 指定相应 serialNumber 号的设备 / 模拟器为命令目标
+
+command 为所需对设备执行的命令
+
+#+BEGIN_SRC bash
+$adb devices
+List of devices attached
+cf263b7f device
+emulator-5554 offline
+192.168.1.6:5555 device
+$adb -s cf263b7f #连接cf264b8f 设备
+adb devices 查看已连接的设备信息, 上面已经连接 3 台设备。
+#+END_SRC
+
+2.2 查看信息
+
+2.2.1 查看版本设备
+
+adb version 查看 adb 版本信息
+
+adb devices 查看 adb 连接设备
+
+示例：
+
+$adb devices
+List of devices attached
+1226959f device
+3426422f offline
+注意：offline 表示设备未连接成功或无响应，device 设备已连接
+
+adb shell getprop ro.product.model 查看设备型号
+
+adb get-serialno 获取设备序列号
+
+adb bugreport 查看 bug 报告
+
+adb logcat 查看日志
+
+adb shell wm size 查看屏幕分辨率
+
+adb shell wm density 查看屏幕密度
+
+2.2.2 查看应用信息
+
+adb shell pm list packages 列出手机装的所有 app 的包名
+
+adb shell pm list packages -s 列出系统应用的所有包名
+
+adb shell pm list packages -3 列出除了系统应用的第三方应用包名
+
+adb shell pm list packages | find "test" win 列出手机装带有的 test 的包
+
+adb shell pm list packages | grep ‘test’ linux 列出手机装带有的 test 的包
+
+adb shell cat /sys/class/net/wlan0/address 获取 MAC 地址, 根据系统版本参数可能不同
+
+adb shell getprop ro.build.version.release 查看 Android 系统版本
+
+adb shell dumpsys activity services [<packagename>] 查看正在运行的 Services
+
+<packagename> 参数不是必须的，指定<packagename> 表示查看与某个包名相关的 Services，不指定表示查看所有 Services。
+
+<packagename> 不一定要给出完整的包名，比如运行 adb shell dumpsys activity services org.zhihu，那么包名 org.zhihu.demo1、org.zhihu.demo2 和 org.zhihu 等相关的 Services 都会列出来。
+
+2.3 app 安装和卸载
+
+2.3.1 app 安装：
+
+adb install <apkfile> 参数 apkfile 为. apk 文件名称
+
+adb install -r test.apk 保留数据和缓存文件，重新安装 apk
+
+adb install -s test.apk 安装 apk 到 sd 卡
+
+2.3.2 app 卸载
+
+adb uninstall <package> 参数 package 为软件包名称
+
+示例：
+
+$adb uninstall cn.com.test.mobile
+
+#  卸载app 但保留数据和缓存文件
+$adb uninstall -k ccn.com.test.mobile
+2.4 启动停止服务
+
+adb start-server
+
+启动 adb 服务，基本不会用到，因为只要设备连接正确，会自动启动 adb server
+
+adb kill-server
+
+停止 adb server
+
+adb -P <port> start-server
+
+指定 adb server 的网络端口 port （默认为 5037）启动服务
+
+2.5 与应用交互
+
+adb shell pm clear <packagename>
+
+清除应用数据与缓存
+
+示例：
+
+$adb shell pm clear cn.com.test.mobile
+adb shell am force-stop <packagename>
+
+强制停止应用
+
+示例：强制停止微信
+
+$adb shell am force-stop com.tencent.mm
+adb shell am <command>
+
+command 命令详解
+
+command 用途
+start [options] <INTENT> 启动 <INTENT> 指定的 Activity
+startservice [options] <INTENT> 启动 <INTENT> 指定的 Service
+broadcast [options] <INTENT> 发送 <INTENT> 指定的广播
+force-stop <packagename> 停止 <packagename> 相关的进程
+<INTENT> 参数很灵活，和写 Android 程序时代码里的 Intent 相对应, 用于决定 intent 对象的选项如下：
+
+-a <ACTION> 指定 action，如 android.intent.action.VIEW
+-c <CATEGORY> 指定 category，如 android.intent.category.APP_CONTACTS
+-n <COMPONENT> 指定完整 component 名，用于明确指定启动哪个 Activity，如
+com.example.app/.ExampleActivity
+2.5.1 启动 Activity
+
+adb shell am start [options] <INTENT>
+
+示例：
+
+ #指定完整 component 名，用于明确指定启动哪个Activity
+$adb shell am start -n <COMPONENT>
+如： #表示调起微信主界面
+$adb shell am start -n com.tencent.mm/.ui.LauncherUI
+2.5.2 启动 Service
+
+adb shell am startservice [options] <INTENT>
+
+示例： 表示调起微信的某 Service。
+
+$adb shell am startservice -n com.tencent.mm/.plugin.accountsync.model.AccountAuthenticatorService
+2.5.3 发送广播
+
+可以向所有组件广播，也可以只向指定组件广播。
+
+adb shell am broadcast [options] <INTENT>
+
+示例：
+
+#向所有组件广播 BOOT_COMPLETED (开机广播)
+$adb shell am broadcast -a android.intent.action.BOOT_COMPLETED
+#如：只向 org.mazhuang.boottimemeasure/.BootCompletedReceiver 广播 BOOT_COMPLETED：
+$adb shell am broadcast -a android.intent.action.BOOT_COMPLETED -n org.mazhuang.boottimemeasure/.BootCompletedReceiver
+系统预定义的广播：
+
+
+
+Android 系统预定义广播
+
+2.5.4 强制停止应用
+
+adb shell am force-stop <packagename>
+
+示例：
+
+ # 查询出包名
+$adb shell pm list packages
+.....
+# 强制停止微信
+$adb shell am force-stop com.tencent.mm
+2.6 文件管理
+
+2.6.1 复制设备里的文件到电脑
+
+adb pull <设备里的文件路径> [电脑上的目录]
+
+示例：
+
+$adb pull /sdcard/abc.mp4  ~/tmp/
+小技巧：设备上的文件路径可能需要 root 权限才能访问，如果你的设备已经 root 过，可以先使用 adb shell 和 su 命令在 adb shell 里获取 root 权限后，先 cp /path/on/device /sdcard/filename 将文件复制到 sdcard，然后 adb pull /sdcard/filename /path/on/pc。
+2.6.2 复制电脑里的文件到设备
+
+adb push <电脑上的文件路径> < 设备里的目录 >
+
+示例：
+
+$adb push  e:/ss.au3  /data/local/tmp/
+小技巧：设备上的文件路径普通权限可能无法直接写入，如果你的设备已经 root 过，可以先 adb push /path/on/pc /sdcard/filename，然后 adb shell 和 su 在 adb shell 里获取 root 权限后，cp /sdcard/filename /path/on/device
+2.7 使用 ADB 命令模拟按键 / 输入
+
+adb shell input keyevent <keycode>
+
+keycode 位操作参数，不同的 keycode 能实现不同的功能
+
+完整的功能见：https://developer.android.com/reference/android/view/KeyEvent.html
+
+keycode 能实现不同的功能，对应的编码如下：

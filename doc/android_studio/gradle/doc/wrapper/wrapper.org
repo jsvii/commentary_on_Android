@@ -1,0 +1,168 @@
+* gradle wrapper
+
+https://cloud.tencent.com/developer/article/1400670
+
+
+在本系列的此前文章中，我们学习了为什么要用Gradle、Gradle的入门基础和Groovy的基础，这些文章为Gradle的入门打下了基础，这一篇我们接着学
+习Gradle Wrapper。有的同学可能有疑问，你不是要讲Android Gradle嘛，讲这个干啥？了解Gradle Wrapper可以更好的理解Gradle，Gradle
+Wrapper在日常开发中看似“不起眼”，实则超级重要。
+
+1.为什么需要Gradle Wrapper
+
+Gradle Wrapper称为Gradle包装器，是对Gradle的一层包装。为什么需要Gradle Wrapper呢？比如在一个开发团队中，如果每进来一个成员，都需要在
+计算机中安装Gradle，这个时候运行Gradle的环境和版本就会对构建结果带来不确定性。针对这个问题，Gradle提供了一个解决方案，那就是Gradle
+Wrapper，它是一个脚本，可以在计算机没有安装Gradle的情况下运行Gradle构建，并且能够指定Gradle的版本，开发人员可以快速启动并运行Gradle
+项目，而不必手动安装，这样就标准化了项目，从而提高了开发效率。AS在新建项目时会自带Gradle Wrapper，这也是我们很少去单独去下载安装
+Gradle的原因。Gradle Wrapper的工作流程如下图所示。
+
+当使用Gradle Wrapper启动Gradle时，如果指定版本的Gradle没有被下载关联，会先从Gradle官方仓库下载该版本Gradle到用户本地，进行解包并执行
+批处理文件。后续的构建运行都会重用这个解包的运行时安装程序。
+
+2.构建Gradle Wrapper
+
+首先要确保计算机中配置好了Gradle的环境，没有的话可以参考Android Gradle（二）Gradle入门前奏这篇文章去配置Gradle的环境。 Gradle已经内
+置了Wrapper Task，执行Wrapper Task就可以在项目目录中生成Gradle Wrapper的目录文件。在项目根目录执行gradle wrapper就可以了。
+
+$ gradle wrapper
+> Task :wrapper
+
+BUILD SUCCESSFUL in 0s
+1 actionable task: 1 executed
+
+这时会在项目根目录中生成如下文件：
+
+├── gradle
+│   └── wrapper
+│       ├── gradle-wrapper.jar
+│       └── gradle-wrapper.properties
+├── gradlew
+└── gradlew.bat
+
+每个文件的含义如下：
+
+* gradle-wrapper.jar ：包含Gradle运行时的逻辑代码。
+* gradle-wrapper.properties ：负责配置包装器运行时行为的属性文件，用来配置使用哪个版本的Gradle等属性。
+* gradlew：Linux平台下，用于执行Gralde命令的包装器脚本。
+* gradlew.bat：Windows平台下，用于执行Gralde命令的包装器脚本。
+
+当生成好了上面的这些目录与文件后，用户就可以将工程push到远程，当其他用户clone下来后就可以直接进行项目的构建，节省了用户单独下载
+Gradle的时间，并且可以确保Gradle版本的一致。
+
+也可以用gradle命令行选项，来生成gradle wrapper。 --gradle-version：用于下载和执行指定的gradle版本。 --distribution-type：指定下载
+Gradle发行版的类型，可用选项有bin和all，默认值是bin，-bin发行版只包含运行时，但不包含源码和文档。 --gradle-distribution-url： 指定下
+载Gradle发行版的完整URL地址。 --gradle-distribution-sha256-sum：使用的SHA 256散列和验证下载的Gradle发行版。
+
+比如使用命令行：gradle wrapper --gradle-version 4.2.1 --distribution-type all，就可以生成版本为4.2.1的包装器，并使用-all发行版。
+
+3.配置Gradle Wrapper
+
+gradle-wrapper.properties是Gradle Wrapper的属性文件，用来配置Gradle Wrapper，Gradle 4.2.1版本对应的gradle-wrapper.properties如下所
+示。
+
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-4.2.1-bin.zip
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+
+字段的含义如下：
+
+* distributionBase：Gradle解包后存储的主目录。
+* distributionPath：distributionBase指定目录的子目录。distributionBase+distributionPath就是Gradle解包后的存放位置。
+* distributionUrl：Gradle发行版压缩包的下载地址。
+* zipStoreBase：Gradle压缩包存储主目录。
+* zipStorePath：zipStoreBase指定目录的子目录。zipStoreBase+zipStorePath就是Gradle压缩包的存放位置。
+
+这里我们最需要关注的是distributionUrl这个字段，如果官方的地址下载不了或者缓慢，可以将这个地址换为其他的镜像地址，或者干脆把Gradle发
+行版压缩包放在服务器上以供下载。
+
+4.使用Gradle Wrapper
+
+使用Gradle Wrapper不是用Gradle命令，而是用gradlew和gradlew.bat脚本。在build.gradle中加入如下语句：
+
+task test {
+    doLast {
+        println 'Hello world!'
+    }
+}
+
+以Windows平台为例，我们进入项目所在的根目录执行gradlew.bat test：
+
+f:\app>gradlew.bat test
+Downloading https://services.gradle.org/distributions/gradle-4.2.1-bin.zip
+...................................................................
+Starting a Gradle Daemon (subsequent builds will be faster)
+
+> Task :test
+Hello world!
+
+如果计算机中没有Gradle发行版，Gradle包装器会将Gradle发行版压缩包下载到本地中并进行解压，比如在我计算机中的存储路径为：
+C:\Users\52501.gradle\wrapper\dists\gradle-4.2.1-bin\dajvke9o8kmaxbu0kc5gcgeju\gradle-4.2.1。 如果此后Gradle属性文件的
+distributionUrl属性不变，就会一直使用本地的Gradle发行版。如果我们再次执行gradlew.bat test，就会和调用Gradle命令一样：
+
+f:\app>gradlew.bat test
+Starting a Gradle Daemon (subsequent builds will be faster)
+
+> Task :test
+Hello world!
+
+5.升级Gradle Wrapper
+
+升级Gradle Wrapper有两种方式，一种是设置Gradle属性文件的distributionUrl属性，第二种是通过运行wrapper任务，推荐使用第二种方式。当前本
+地的Gradle版本为4.2.1，我想升级为5.1.1，只需要运行gradlew wrapper --gradle-version 5.1.1命令就可以了。
+
+f:\app>gradlew wrapper --gradle-version 5.1.1
+
+BUILD SUCCESSFUL in 1s
+1 actionable task: 1 executed
+
+运行gradlew -v命令来检查Gradle的版本。
+
+f:\app>gradlew -v
+Downloading https://services.gradle.org/distributions/gradle-5.1.1-bin.zip
+.................................................................................
+Unzipping C:\Users\52501\.gradle\wrapper\dists\gradle-5.1.1-bin\90y9l8txxfw1s2o6ctiqeruwn\gradle-5.1.1-bin.zip to C:\Users\52501\.gradle\wrapper\dists\gradle-5.1.1-bin\90y9l8txxfw1s2o6ctiqeruwn
+
+Welcome to Gradle 5.1.1!
+
+Here are the highlights of this release:
+ - Control which dependencies can be retrieved from which repositories
+ - Production-ready configuration avoidance APIs
+
+For more details see https://docs.gradle.org/5.1.1/release-notes.html
+
+------------------------------------------------------------
+Gradle 5.1.1
+------------------------------------------------------------
+
+Build time:   2019-01-10 23:05:02 UTC
+Revision:     3c9abb645fb83932c44e8610642393ad62116807
+
+Kotlin DSL:   1.1.1
+Kotlin:       1.3.11
+Groovy:       2.5.4
+Ant:          Apache Ant(TM) version 1.9.13 compiled on July 10 2018
+JVM:          1.8.0_191 (Oracle Corporation 25.191-b12)
+OS:           Windows 10 10.0 amd64
+
+由于本地不是Gradle 5.1.1，会将下载下来的Gradle压缩包存储起来并进行解包，具体的见上面的打印日志。
+
+6.自定义Gradle Wrapper
+
+Gradle已经内置了Wrapper Task，因此构建Gradle Wrapper会生成Gradle Wrapper的属性文件，这个属性文件可以通过自定义Wrapper Task来设置。比
+如我们想要修改要下载的Gralde版本为4.2.1，可以这么设置：
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2.1'
+}
+
+也可以设置Gradle发行版压缩包的下载地址和Gradle解包后的本地存储路径等配置。
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.2.1'
+    distributionUrl = '../../gradle-4.2.1-bin.zip'
+    distributionPath=wrapper/dists
+
+}
+
+distributionUrl属性可以设置为本地的项目目录，你也可以设置为网络地址。

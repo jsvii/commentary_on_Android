@@ -1,0 +1,30 @@
+artifacts { }
+Configures the published artifacts for this project.
+
+This method executes the given closure against the ArtifactHandler for this project. The ArtifactHandler is passed to the closure as the closure's delegate.
+
+Example:
+
+configurations {
+  //declaring new configuration that will be used to associate with artifacts
+  schema
+}
+
+task schemaJar(type: Jar) {
+  //some imaginary task that creates a jar artifact with the schema
+}
+
+//associating the task that produces the artifact with the configuration
+artifacts {
+  //configuration name and the task:
+  schema schemaJar
+}
+Delegates to:
+ArtifactHandler from artifacts
+buildscript { }
+Configures the build script classpath for this project.
+
+The given closure is executed against this project's ScriptHandler. The ScriptHandler is passed to the closure as the closure's delegate.
+
+Delegates to:
+ScriptHandler from buildscript

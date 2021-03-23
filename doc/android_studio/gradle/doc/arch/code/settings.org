@@ -1,0 +1,3 @@
+* settings
+
+~org.gradle.api.initialization.Settings~ setting.gradle对应的类

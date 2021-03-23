@@ -1,0 +1,5 @@
+* P
+
+** Parcel
+
+Parcel 就是一个存放读取数据的容器，可以在 Binder 中自由传输

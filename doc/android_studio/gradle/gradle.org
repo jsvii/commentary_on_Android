@@ -1,0 +1,16 @@
+* gradle
+
+Gradle提供了一个域特定语言（DSL），用于描述构建
+
+
+
+- doLast <<
+
+https://www.jianshu.com/p/001abe1d8e95
+
+
+
+#+BEGIN_SRC bash
+curl -s https://get.sdkman.io | bash
+sdk install gradle 6.6.1
+#+END_SRC

@@ -1,0 +1,14 @@
+* FAQ
+
+#+BEGIN_SRC bash
+Warning:<i><b>root project 'SpringPizza': Web Facets/Artifacts will not be configured properly</b>
+Details: org.gradle.api.artifacts.ResolveException: Could not resolve all dependencies for configuration ':runtime'.
+Caused by: org.gradle.api.internal.artifacts.ivyservice.ModuleVersionResolveException: Could not resolve org.springframework:spring-aspects:4.0.7.RELEASE.
+Required by:
+    :SpringPizza:4.0.0
+Caused by: org.gradle.api.internal.artifacts.ivyservice.ModuleVersionResolveException: No cached version of org.springframework:spring-aspects:4.0.7.RELEASE available for offline mode.</i>
+#+END_SRC
+
+https://stackoverflow.com/questions/45454562/intelij-idea-artifact-not-configured-properly-with-gradle
+
+gradle wrapper 4.0.2+ 解决了此问题

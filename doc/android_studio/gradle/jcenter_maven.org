@@ -1,0 +1,19 @@
+* JCenter VS Maven
+
+JCenter是什么？
+它是由 JFrog 公司提供的 Bintray 中的 Java 仓库
+与 Maven Central 相比，JCenter 的速度更快，包含的库更多，UI界面更友好，更容易使用
+Bintray 还支持将 JCenter 上传到 Maven Central 的功能
+JCenter 是 Android Studio 默认使用的服务器仓库
+
+
+
+Jcenter和Maven Central 都是标准的 android library仓库，但是它们维护在完全不同的服务器上，由不同的人提供内容，两者之间毫无关系。在jcenter上有的可能 Maven Central 上没有，反之亦然。
+
+除了两个标准的服务器之外，如果我们使用的library的作者是把该library放在自己的服务器上，我们还可以自己定义特有的Maven仓库服务器。Twitter的Fabric.io 就是这种情况，它们在 https://maven.fabric.io/public 上维护了一个自己的Maven仓库。如果你想使用Fabric.io的library，你必须自己如下定义仓库的url。
+
+
+repositories { maven { url 'https://maven.fabric.io/public' }}
+
+然后在里面使用相同的方法获取一个library。
+dependencies { compile 'com.crashlytics.sdk.android:crashlytics:2.2.4@aar'}

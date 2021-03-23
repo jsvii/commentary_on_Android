@@ -1,0 +1,27 @@
+println 'A ---- build.gradle的配置阶段'
+
+// 调用Project的dependencies(Closure c)声明项目依赖
+dependencies {
+    // 闭包中执行的代码
+    println 'B ---- dependencies中执行的代码'
+
+}
+
+// 创建一个Task
+task test() {
+    println 'C ---- Task中的配置代码'
+    // 定义一个闭包
+    def a = {
+        println 'D ---- Task中的配置代码2'
+
+    }
+    // 执行闭包
+    a()
+    doFirst {
+        println 'F ---- 这段代码配置阶段不执行'
+
+    }
+
+}
+
+println 'E ---- 我是顺序执行的'

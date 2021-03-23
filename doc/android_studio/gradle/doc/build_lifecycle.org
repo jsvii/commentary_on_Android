@@ -1,0 +1,59 @@
+* Gradle lifecycle
+
+** Initialization 初始化阶段
+
+Gradle supports single and multi-project builds. During the initialization phase, Gradle determines which projects are going to take part in the build, and creates a Project instance for each of these projects.
+
+初始化阶段的任务是创建项目的层次结构，并且为每一个项目创建一个Project实例。
+
+与初始化阶段相关的脚本文件是 ~settings.gradle~ （包括<USER_HOME>/.gradle/init.d目录下的所有.gradle脚本文件，此文件作用于本机的所有构建过程）。
+
+一个 ~settings.gradle~ 脚本对应一个Settings对象，我们最常用来声明项目的层次结构的include就是Settings类下的一个方法，在Gradle初始化的时候会构造一个Settings实例对象，它包含了下图中的方法，这些方法都可以直接在settings.gradle中直接访问。
+
+
+** Configuration
+
+During this phase the project objects are configured. The build scripts of all projects which are part of the build are executed.
+
+配置阶段的任务是执行各项目下的build.gradle脚本，完成Project的配置，并且构造Task任务依赖关系图以便在执行阶段按照依赖关系执行Task。
+
+该阶段也是我们最常接触到的构建阶段。
+
+每个 ~build.gralde~ 脚本文件对应一个Project对象，在初始化阶段创建，Project的接口文档。配置阶段执行的代码包括build.gralde中的各种语句、闭包以及Task中的配置段语句，在根目录的build.gradle中添加如下代码：
+
+
+#+BEGIN_SRC groovy
+println 'A'
+
+// 调用Project的dependencies(Closure c)声明项目依赖
+dependencies {
+    // 闭包中执行的代码
+    println 'B'
+
+}
+
+// 创建一个Task
+task test() {
+    println 'C'
+    // 定义一个闭包
+    def a = {
+        println 'D'
+
+    }
+    // 执行闭包
+    a()
+    doFirst {
+        println 'F'
+
+    }
+
+}
+
+println 'E'
+#+END_SRC
+
+** Execution
+
+Gradle determines the subset of the tasks, created and configured during the configuration phase, to be executed. The subset is determined by the task name arguments passed to the gradle command and the current directory. Gradle then executes each of the selected tasks.
+
+在这个阶段，Gradle 会识别在配置阶段创建的任务的有向无环图。并按照他们的依赖顺序开始执行。 所有的构建工作都是在这个阶段执行的。如编译源码，生成 .class 文件，复制文件等。

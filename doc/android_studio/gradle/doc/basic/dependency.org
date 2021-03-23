@@ -1,0 +1,44 @@
+* 依赖管理
+
+1. Gradle 需要知道项目构建或运行所需要的一些文件，以便于找到这些需要的文件。我们称这些输入的文件为项目的依赖。
+
+1. 你可能需要构建完成后自动上传到某个地方。我们称这些输出为发布。
+
+
+** api & implementation
+
+*** api
+
+完全等同于compile指令，没区别，你将所有的compile改成api，完全没有错。
+
+*** implement指令
+
+使用了该命令编译的依赖，它仅仅对当前的Moudle提供接口。
+
+优点：
+
+1. 加快编译速度。
+
+2. 隐藏对外不必要的接口。
+
+*** provided（compileOnly）
+
+只在编译时有效，不会参与打包
+
+可以在自己的moudle中使用该方式依赖一些比如com.android.support，gson这些使用者常用的库，避免冲突。
+
+*** apk（runtimeOnly）
+
+只在生成apk的时候参与打包，编译时不会参与，很少用。
+
+*** testCompile（testImplementation）
+
+testCompile 只在单元测试代码的编译以及最终打包测试apk时有效。
+
+*** debugCompile（debugImplementation）
+
+debugCompile 只在 debug 模式的编译和最终的 debug apk 打包时有效
+
+*** releaseCompile（releaseImplementation）
+
+Release compile仅仅针对 Release 模式的编译和最终的 Release apk 打包。
