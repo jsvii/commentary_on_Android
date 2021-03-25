@@ -95,6 +95,8 @@ List of devices attached
 
 adb shell getprop ro.product.model 查看设备型号
 
+adb shell getprop ro.build.version.sdk 查看SDK的版本号
+
 adb get-serialno 获取设备序列号
 
 adb bugreport 查看 bug 报告

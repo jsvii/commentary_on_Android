@@ -1,0 +1,6 @@
+* 难题
+
+** Android禁止任何主线程网络连接行为
+
+
+在Android4.0以后，会发现，只要是写在主线程（就是Activity）中的HTTP请求，运行时都会报错，这是因为Android在4.0以后为了防止应用的ANR（aplication Not Response）异常
