@@ -1,0 +1,130 @@
+* ProcessState
+
+ProcessState表示进程状态，一个进程有一个ProcessState对象。
+
+它的职责：
+
+1. 打开Binder驱动
+
+1. 建立线程池。
+
+#+BEGIN_SRC cpp
+//frameworks/native/include/binder/ProcessState.h
+class ProcessState : public virtual RefBase
+{
+       public:
+                static  sp<ProcessState>    self();
+                void  startThreadPool();
+                void  spawnPooledThread(bool isMain);
+       private:
+                int  mDriverFD;
+                void*  mVMStart;
+                // Maximum number for binder threads allowed for this process.
+                size_t  mMaxThreads;
+                bool  mThreadPoolStarted;
+                volatile  int32_t  mThreadPoolSeq;
+}
+#+END_SRC
+
+以上是ProcessState中Binder相关的接口和成员变量。
+
+1）获取ProcessState实例，并打开Binder驱动
+
+#+BEGIN_SRC cpp
+//单例模式
+sp<ProcessState> ProcessState::self()
+{
+    Mutex::Autolock _l(gProcessMutex);
+    if (gProcess != NULL) {
+        return gProcess;
+    }
+    gProcess = new ProcessState;
+    return gProcess;
+}
+#+END_SRC
+
+
+#+BEGIN_SRC cpp
+ProcessState::ProcessState(const char *driver)
+    : mDriverName(String8(driver))
+    , mDriverFD(open_driver(driver))                  //在创建实例化时打开了Binder驱动
+    , mVMStart(MAP_FAILED)
+    , mThreadCountLock(PTHREAD_MUTEX_INITIALIZER)
+    , mThreadCountDecrement(PTHREAD_COND_INITIALIZER)
+    , mExecutingThreadsCount(0)
+    , mMaxThreads(DEFAULT_MAX_BINDER_THREADS)
+    , mStarvationStartTimeMs(0)
+    , mBinderContextCheckFunc(nullptr)
+    , mBinderContextUserData(nullptr)
+    , mThreadPoolStarted(false)
+    , mThreadPoolSeq(1)
+    , mCallRestriction(CallRestriction::NONE)
+{
+
+// TODO(b/139016109): enforce in build system
+#if defined(__ANDROID_APEX__)
+    LOG_ALWAYS_FATAL("Cannot use libbinder in APEX (only system.img libbinder) since it is not stable.");
+#endif
+
+    if (mDriverFD >= 0) {
+        // mmap the binder, providing a chunk of virtual address space to receive transactions.
+        mVMStart = mmap(nullptr, BINDER_VM_SIZE, PROT_READ, MAP_PRIVATE | MAP_NORESERVE, mDriverFD, 0);
+        if (mVMStart == MAP_FAILED) {
+            // *sigh*
+            ALOGE("Using %s failed: unable to mmap transaction memory.\n", mDriverName.c_str());
+            close(mDriverFD);
+            mDriverFD = -1;
+            mDriverName.clear();
+        }
+    }
+
+#ifdef __ANDROID__
+    LOG_ALWAYS_FATAL_IF(mDriverFD < 0, "Binder driver '%s' could not be opened.  Terminating.", driver);
+#endif
+}
+#+END_SRC
+
+这个构造函数里面调用open_driver()打开了 ~/dev/binder~ 设备驱动文件，返回了Binder驱动的文件描述符。
+
+在Linux里一切皆文件，而文件描述符就相当于这个文件的句柄，可以对这个文件进行读写操作。有了Binder驱动的文件描述符就可以对Binder驱动进行读写。
+
+2）创建线程池ProcessState::self()->startThreadPool();
+
+void ProcessState::startThreadPool()
+{
+    AutoMutex _l(mLock);
+    if (!mThreadPoolStarted) {//从这里可以看出线程池只能被创建一次
+        mThreadPoolStarted = true;
+        spawnPooledThread(true);//创建线程池时就会马上创建一个主线程
+    }
+}
+
+void ProcessState::spawnPooledThread(bool isMain)
+{
+    if (mThreadPoolStarted) {
+        String8 name = makeBinderThreadName();
+        ALOGV("Spawning new pooled thread, name=%s\n", name.string());
+        sp<Thread> t = new PoolThread(isMain);
+        t->run(name.string());
+    }
+}
+//PoolThread是一个继承于Thread的类，创建了PoolThread其实就是创建了一个线程。
+//调用t->run()之后相当于调用PoolThread类的threadLoop()函数。
+class PoolThread : public Thread
+{
+public:
+    PoolThread(bool isMain)
+        : mIsMain(isMain)
+    {
+    }
+
+protected:
+    virtual bool threadLoop()
+    {
+        IPCThreadState::self()->joinThreadPool(mIsMain);
+        // 这里线程函数调用了一次IPCThreadState::self()->joinThreadPool()后就退出了
+        return false;
+    }
+
+    const bool mIsMain;
+};

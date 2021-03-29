@@ -1,0 +1,107 @@
+* android sdk
+
+
+
+#+BEGIN_SRC
+export ANDROID_HOME=$HOME/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+#+END_SRC
+
+1. cmdline-tools: sdkmanager一类的
+
+1. platform-tools: adp
+
+
+
+** Android SDK下各目录文件夹的介绍
+
+
+*** add-ones
+
+add-ones：里面保存着一些附加的库，第三方公司为Android平台开发的附加功能系统。比如GoogleMaps 。(一开始此包为空)
+
+*** build-tools
+
+build-tools：编译工具目录，包含了转化为davlik虚拟机的编译工具。当创建Android项目(构建项目)的时候会用到这个包。在创建项目的时候如果没有此
+包会报错。 （随着SDK版本的迭代，编译工具也会有相应新版本，建议使用最新的编译工具）
+
+包括:
+aidl.exe：把.aidl 接口转换成java接口
+
+dexdump.exe (逆向调试工具) : dump devlik中间代码
+
+aapt.exe（Android Asset Packaging Tool）：编译应用程序的资源文件（包括AndroidManifest.xml和你的Activities的xml文件），生成R.java文件，这样你就可以从你的java代码中引用资源。
+
+dx.bat(编译脚本)：  将.class中间代码转化为dvlik中间代码,所有经过java编译的生成.class文件都需要此工具进行转换,最后打包进apk文件中.
+
+*** docs
+
+docs这里面是Android SDKAPI参考文档，所有的API都可以在这里查到。
+
+extras
+
+extras：该文件下存放了Google提供的USB驱动，Intel提供的硬件加速附件工具包。（后期存放了Android Support兼容包，使用兼容包版本时最好与SDK版
+本保持一致）
+
+platforms
+
+platforms：里面是根据APILevel划分的SDK版本/平台，这个文件夹是SDK里面最重要的文件(每个平台的SDK真正的文件),这里就以Android6.0为例，进入后
+有一个android-23的文件夹，android-23进入后是Android6.0 SDK的主要文件，
+
+其中
+data:保存着一些系统资源，
+skins:Android模拟器的皮肤，
+templates:是工程创建的默认模板，
+android.jar:是该版本的主要framework文件。
+
+有时候我们在导入项目的时候发现导入后没有SDK，就是因为这里面没有我们导入项目编译时的SDK 包括android的平台。包含在android.jar库中。你必须指
+一个平台为你的编译目标。
+project.properties里面将target改为platforms里面有的版本重新编译即可。这里面有SDK不同的版本，每个版本下面又有许多文件组成。还有就是如果你
+再布局中如果编写没有错误，但是视图预览不了，可能是由于你SDK选择的版本有问题。
+
+这里写图片描述
+
+platform-tools
+
+platform-tools：该文件夹下放了Android平台的相关开发和调试工具,比如adb.exe、sqlite3.exe等。platform-tools保存着一些通用工具，比如adb、和
+aapt、aidl、dx等文件
+
+注意:这里和platforms目录中tools文件夹有些重复，主要是从android2.3开始这些工具被划分为通用了。
+
+sources
+
+sources：这个文件夹下面存放的是Android的源代码。
+
+system-images
+
+system-images：存放的是创建Android虚拟机时的镜像文件(已经编译好的镜像文件,模拟器可以直接加载)。从android-14开始将模拟器镜像文件整理在这里
+(原来放在platforms下)
+
+temp
+
+temp : 临时目录
+
+tools
+
+tools：这个文件夹下存放了大量Android开发、调试的工具。包括测试、调试、第三方工具。模拟器、数据管理工具等。比如ddms用于启动Android调试工
+具，比如logcat、屏幕截图和文件管理器，而draw9patch则是绘制android平台的可缩放png图片的工具，而monkeyrunner则是一个不错的压力测试应用，模
+拟用户随机按键，mksdcard则是模拟器SD映像的创建工具，emulator是Android SDK模拟器主程序，不过从android 1.5开始，需要输入合适的参数才能启动
+模拟器，traceview作为android平台上重要的调试工具。
+
+AVD Manager.exe
+
+AVD Manager.exe：虚拟机管理工具，用于建立和管理虚拟机。
+
+SDK Manager.exe
+
+SDK Manager.exe：sdk管理工具，用于管理、下载sdk、sdk工具，能及扩展工具
+
+samples
+
+samples：是Android SDK自带的默认示例工程，里面的apidemos强烈推荐初学者运行学习，对于SQLite数据库操作可以查看NotePad这个例子，对于游戏开发
+Snake、LunarLander都是不错的例子，对于Android主题开发Home则是androidm5时代的主题设计原理。
+
+licenses
+
+market_licensing作为AndroidMarket版权保护组件，一般发布付费应用到电子市场可以用它来反盗版。

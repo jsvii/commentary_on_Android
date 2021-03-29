@@ -1,0 +1,3 @@
+* android.app.SystemServiceRegistry
+
+app相关的Servie 注册

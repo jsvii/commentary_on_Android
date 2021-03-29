@@ -1,0 +1,9 @@
+* ActivityManager
+
+
+#+BEGIN_SRC java
+@SystemService(Context.ACTIVITY_SERVICE)
+public class ActivityManager {
+
+}
+#+END_SRC

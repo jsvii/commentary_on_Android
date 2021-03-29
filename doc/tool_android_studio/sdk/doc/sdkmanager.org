@@ -1,0 +1,21 @@
+* sdkmanager
+
+sdkmanager --install "ndk;21.3.6528147" --channel=3
+
+sdkmanager "platform-tools" "platforms;android-28"
+
+** 列出已安装和可用的软件包
+
+#+BEGIN_SRC bash
+sdkmanager --list [options] [--channel=channel_id] // Channels: 0 (stable), 1 (beta), 2 (dev), or 3 (canary)
+#+END_SRC
+
+
+
+** 安装软件包
+
+#+BEGIN_SRC bash
+sdkmanager packages [options]
+#+END_SRC
+
+packages 参数是 --list 命令列出的 SDK 式的路径，这些路径括在引号中（例如 "build-tools;29.0.2" 或 "platforms;android-28"）。您可以传递多个软件包路径（用空格分隔），但各个路径必须括在各自的一组引号中。
