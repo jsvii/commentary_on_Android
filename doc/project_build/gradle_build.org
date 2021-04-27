@@ -25,3 +25,13 @@ Android Gradle 插件版本所需的 Gradle 版本。为了获得最佳性能，
 ** 比较好的参考文档
 
 1. https://juejin.cn/post/6844904142725447687
+
+
+#+BEGIN_SRC groovy
+maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
+maven { url 'http://maven.aliyun.com/nexus/content/repositories/google' }
+maven { url 'http://maven.aliyun.com/nexus/content/repositories/gradle-plugin' }
+#+END_SRC
+
+2. test
