@@ -57,4 +57,3 @@
 ## 清华大学源下载android
 
 https://mirrors.tuna.tsinghua.edu.cn/help/AOSP/
-

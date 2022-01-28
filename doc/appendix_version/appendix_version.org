@@ -30,8 +30,8 @@
 |  Eclair             | 2.0    API 5
 |  Donut              | 1.6    API 4，NDK 2
 |  Cupcake            | 1.5    API 3，NDK 1
-|  -             | 1.1    API 2
-|  -             | 1.0    API 1
+|  -                  | 1.1    API 2
+|  -                  | 1.0    API 1
 
 
 

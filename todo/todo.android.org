@@ -1,0 +1,31 @@
+* Android 学习
+
+
+** TODO Android系统编译
+
+   - [X] android 下载
+
+   - [X] 文档
+
+     - https://source.android.com/setup
+
+   - [X] android linux编译成功
+
+      - 发现的问题
+
+        ~/home/leo/workspace/android/device/generic/goldfish/tools/mk_combined_img.py~ 文件需要改为python2， android中都说要是python3了，这个比较奇怪。
+
+
+** TODO adb所支持的命令
+
+   -
+
+
+** TODO 技术文档更新
+
+   - [X] git申请
+
+   - [] 内容更新，分《开发者文档》、《UI标准化文档》
+
+
+   - [] 汇聚成PDF
