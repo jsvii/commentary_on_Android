@@ -2,22 +2,13 @@
 
 ** 显式Intent & 隐式Intent
 
-1. 显式Intent：通过组件名指定启动的目标组件,比如startActivity(new Intent(A.this,B.class)); 每次启动的组件只有一个~
+- ~显式Intent~ 通过组件名指定启动的 ~目标组件~ (即目标组件的类名是确定的)，比如 startActivity(new Intent(A.this, B.class))
 
-1. 隐式Intent:不指定组件名,而指定Intent的Action,Data,或Category,当我们启动组件时, 会去匹配AndroidManifest.xml相关组件的Intent-filter,逐一匹配出满足属性的组件,当不止一个满足时, 会弹出一个让我们选择启动哪个的对话框
+- ~隐式Intent~ 不指定组件名，而指定Intent的Action，Data，或Category，当我们启动组件时, 会去匹配 ~AndroidManifest.xml~ 相关组件的Intent-filter，逐一匹配出满足属性的组件，当不止一个满足时, 会弹出一个让我们选择启动哪个的对话框
 
 在Android系统中，可利用隐式intent启动其他应用的activity。在显式intent中，我们指定要启动的activity类，操作系统会负责启动它。在隐式intent中，我们只要描述要完成的任务，操作系统就会找到合适的应用，并在其中启动相应的activity。
 
-
-1. ComponentName(组件名称)
-
-
-
-
 显式Intent使用示例：
-这个用得很多，直接就上例子了：
-
-例子1：点击按钮返回Home界面
 
 #+BEGIN_SRC java
 Intent it = new Intent();
@@ -28,8 +19,7 @@ startActivity(it);
 
 ** IntentFilter
 
-IntentFilter直译：意图过滤器，可以给四大组件配置自己关心的action等，以免想打开A结果打开了B
-使用场景就太多了，比如Receiver需要指定intent-filter来表明自己关心什么广播等
+IntentFilter直译：意图过滤器，可以给四大组件配置自己关心的action等，以免想打开A结果打开了B 使用场景就太多了，比如Receiver需要指定intent-filter来表明自己关心什么广播等
 
 
 单从manifest层面讲intentFilter下有三个参数，action,data，category。

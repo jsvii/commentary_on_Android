@@ -1,8 +1,20 @@
-# Android 学习笔记
+* Android 学习笔记
 
-## 重要主题
 
-### Android 框架
+** Android Platform
+
+** jetpack
+
+** kernel
+
+   内核
+
+** appendix android_studio
+
+** appendix sdk
+
+   - adb
+
 
 [Androidx](java_api/androidx/README.md)
 
